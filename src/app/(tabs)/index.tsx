@@ -1,6 +1,6 @@
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { styles, COLORS } from '@/styles/dashboard.styles';
 import Svg, { Circle } from 'react-native-svg';
 
@@ -82,8 +82,7 @@ export default function DashboardScreen() {
                   strokeDasharray={`${2 * Math.PI * 42}`}
                   strokeDashoffset={`${2 * Math.PI * 42 * (1 - porcentajeLibre / 100)}`}
                   strokeLinecap="round"
-                  rotation="-90"
-                  origin="50, 50"
+                  transform="rotate(-90 50 50)"
                 />
               </Svg>
               <View style={{ position: 'absolute', alignItems: 'center' }}>
@@ -109,29 +108,6 @@ export default function DashboardScreen() {
           </View>
         </View>
       </ScrollView>
-
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navIconWrapper}>
-          <Ionicons name="home" size={24} color={COLORS.primary} />
-          <View style={styles.navIndicator} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.navIconWrapper}>
-          <MaterialCommunityIcons name="parking" size={24} color={COLORS.textGray} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.navIconWrapper}>
-          <Ionicons name="car-outline" size={24} color={COLORS.textGray} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.navIconWrapper}>
-          <Ionicons name="time-outline" size={24} color={COLORS.textGray} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.navItemPrimary}>
-          <Ionicons name="add" size={22} color="#FFF" />
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
