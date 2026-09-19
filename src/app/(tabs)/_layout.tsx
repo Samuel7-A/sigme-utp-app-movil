@@ -5,7 +5,6 @@ import {
   View,
 } from "react-native";
 
-import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Tabs } from "expo-router";
 
 import {
@@ -15,94 +14,90 @@ import {
 
 import { COLORS } from "@/styles/dashboard.styles";
 
-
-function CustomTabBar({
-  state,
-  descriptors,
-  navigation,
-}: BottomTabBarProps) {
-  return (
-    <View style={styles.tabBar}>
-      {state.routes.map((route, index) => {
-        const isFocused = state.index === index;
-
-        const color = isFocused
-          ? COLORS.primary
-          : COLORS.textGray;
-
-        const onPress = () => {
-          const event = navigation.emit({
-            type: "tabPress",
-            target: route.key,
-            canPreventDefault: true,
-          });
-
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
-          }
-        };
-
-        return (
-          <Pressable
-            key={route.key}
-            onPress={onPress}
-            accessibilityRole="button"
-            accessibilityState={
-              isFocused
-                ? { selected: true }
-                : {}
-            }
-            style={styles.tabItem}
-          >
-            {route.name === "index" && (
-              <Ionicons
-                name="home"
-                size={24}
-                color={color}
-              />
-            )}
-
-            {route.name === "mapa" && (
-              <MaterialCommunityIcons
-                name="parking"
-                size={25}
-                color={color}
-              />
-            )}
-
-            {route.name === "vehiculos" && (
-              <Ionicons
-                name="car-outline"
-                size={24}
-                color={color}
-              />
-            )}
-
-            {route.name === "historial" && (
-              <Ionicons
-                name="time-outline"
-                size={24}
-                color={color}
-              />
-            )}
-          </Pressable>
-        );
-      })}
-    </View>
-  );
-}
-
-
 export default function TabsLayout() {
   return (
     <View style={styles.container}>
       <Tabs
-        tabBar={(props) => (
-          <CustomTabBar {...props} />
-        )}
         screenOptions={{
           headerShown: false,
         }}
+        tabBar={({ state, navigation }) => (
+          <View style={styles.tabBar}>
+            {state.routes.map((route, index) => {
+              const isFocused = state.index === index;
+
+              const color = isFocused
+                ? COLORS.primary
+                : COLORS.textGray;
+
+              const onPress = () => {
+                const event = navigation.emit({
+                  type: "tabPress",
+                  target: route.key,
+                  canPreventDefault: true,
+                });
+
+                if (!isFocused && !event.defaultPrevented) {
+                  navigation.navigate(route.name);
+                }
+              };
+
+              const onLongPress = () => {
+                navigation.emit({
+                  type: "tabLongPress",
+                  target: route.key,
+                });
+              };
+
+              return (
+                <Pressable
+                  key={route.key}
+                  onPress={onPress}
+                  onLongPress={onLongPress}
+                  accessibilityRole="button"
+                  accessibilityState={
+                    isFocused
+                      ? { selected: true }
+                      : {}
+                  }
+                  style={styles.tabItem}
+                >
+                  {route.name === "index" && (
+                    <Ionicons
+                      name="home"
+                      size={24}
+                      color={color}
+                    />
+                  )}
+
+                  {route.name === "mapa" && (
+                    <MaterialCommunityIcons
+                      name="parking"
+                      size={25}
+                      color={color}
+                    />
+                  )}
+
+                  {route.name === "vehiculos" && (
+                    <Ionicons
+                      name="car-outline"
+                      size={24}
+                      color={color}
+                    />
+                  )}
+
+                  {route.name === "historial" && (
+                    <Ionicons
+                      name="time-outline"
+                      size={24}
+                      color={color}
+                    />
+                  )}
+                </Pressable>
+              );
+            })}
+          </View>
+        )}
       >
         <Tabs.Screen
           name="index"
@@ -133,7 +128,7 @@ export default function TabsLayout() {
         />
       </Tabs>
 
-      {/* Botón + completamente independiente */}
+      {/* Botón + separado de la barra */}
       <Pressable
         style={styles.addButton}
         onPress={() =>
@@ -153,18 +148,11 @@ export default function TabsLayout() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
 
-  /*
-   * Barra inferior.
-   *
-   * Ya no depende del diseño interno
-   * que React Navigation aplica a cada tab.
-   */
   tabBar: {
     position: "absolute",
 
@@ -174,11 +162,11 @@ const styles = StyleSheet.create({
 
     height: 60,
 
-    borderRadius: 20,
-    backgroundColor: "#FFFFFF",
-
     flexDirection: "row",
     alignItems: "center",
+
+    borderRadius: 20,
+    backgroundColor: "#FFFFFF",
 
     shadowColor: "#000",
     shadowOpacity: 0.12,
@@ -191,13 +179,8 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
 
-  /*
-   * Cada icono ocupa exactamente
-   * toda la altura de la barra.
-   */
   tabItem: {
     flex: 1,
-
     height: 60,
 
     alignItems: "center",
@@ -207,9 +190,6 @@ const styles = StyleSheet.create({
     margin: 0,
   },
 
-  /*
-   * Botón + independiente de la barra.
-   */
   addButton: {
     position: "absolute",
 
@@ -220,7 +200,6 @@ const styles = StyleSheet.create({
     height: 56,
 
     borderRadius: 18,
-
     backgroundColor: COLORS.primary,
 
     alignItems: "center",
