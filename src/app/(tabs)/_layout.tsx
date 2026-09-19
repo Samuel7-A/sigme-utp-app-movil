@@ -1,97 +1,239 @@
-import { View, Pressable, Alert } from "react-native";
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
+
+import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Tabs } from "expo-router";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { styles, COLORS } from "@/styles/dashboard.styles";
+
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
+
+import { COLORS } from "@/styles/dashboard.styles";
+
+
+function CustomTabBar({
+  state,
+  descriptors,
+  navigation,
+}: BottomTabBarProps) {
+  return (
+    <View style={styles.tabBar}>
+      {state.routes.map((route, index) => {
+        const isFocused = state.index === index;
+
+        const color = isFocused
+          ? COLORS.primary
+          : COLORS.textGray;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name, route.params);
+          }
+        };
+
+        return (
+          <Pressable
+            key={route.key}
+            onPress={onPress}
+            accessibilityRole="button"
+            accessibilityState={
+              isFocused
+                ? { selected: true }
+                : {}
+            }
+            style={styles.tabItem}
+          >
+            {route.name === "index" && (
+              <Ionicons
+                name="home"
+                size={24}
+                color={color}
+              />
+            )}
+
+            {route.name === "mapa" && (
+              <MaterialCommunityIcons
+                name="parking"
+                size={25}
+                color={color}
+              />
+            )}
+
+            {route.name === "vehiculos" && (
+              <Ionicons
+                name="car-outline"
+                size={24}
+                color={color}
+              />
+            )}
+
+            {route.name === "historial" && (
+              <Ionicons
+                name="time-outline"
+                size={24}
+                color={color}
+              />
+            )}
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
 
 export default function TabsLayout() {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <Tabs
+        tabBar={(props) => (
+          <CustomTabBar {...props} />
+        )}
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: COLORS.primary,
-          tabBarInactiveTintColor: COLORS.textGray,
-          tabBarShowLabel: false,
-          tabBarStyle: {
-            position: "absolute",
-            left: 16,
-            right: 16,
-            bottom: 16,
-            height: 60,
-            borderRadius: 20,
-            backgroundColor: "#FFFFFF",
-            borderTopWidth: 0,
-            paddingBottom: 0,
-            paddingTop: 0,
-            shadowColor: "#000",
-            shadowOpacity: 0.12,
-            shadowRadius: 10,
-            shadowOffset: { width: 0, height: 4 },
-            elevation: 8,
-          },
         }}
       >
         <Tabs.Screen
           name="index"
           options={{
             title: "Inicio",
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="home" size={size} color={color} />
-            ),
           }}
         />
+
         <Tabs.Screen
           name="mapa"
           options={{
             title: "Mapa",
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons
-                name="parking"
-                size={size}
-                color={color}
-              />
-            ),
           }}
         />
+
         <Tabs.Screen
           name="vehiculos"
           options={{
             title: "Vehículos",
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="car-outline" size={size} color={color} />
-            ),
           }}
         />
+
         <Tabs.Screen
           name="historial"
           options={{
             title: "Historial",
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="time-outline" size={size} color={color} />
-            ),
           }}
         />
       </Tabs>
 
-      {/* Botón flotante "+" encima de la barra de pestañas */}
+      {/* Botón + completamente independiente */}
       <Pressable
-        style={{
-          position: "absolute",
-          bottom: 24,
-          right: 28,
-          width: 40,
-          height: 40,
-          borderRadius: 12,
-          backgroundColor: COLORS.primary,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        style={styles.addButton}
         onPress={() =>
-          Alert.alert("Menú", "Aquí va a abrirse el menú con Ayuda (pendiente)")
+          Alert.alert(
+            "Menú",
+            "Aquí va a abrirse el menú con Ayuda (pendiente)"
+          )
         }
       >
-        <Ionicons name="add" size={20} color="#FFF" />
+        <Ionicons
+          name="add"
+          size={28}
+          color="#FFFFFF"
+        />
       </Pressable>
     </View>
   );
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+
+  /*
+   * Barra inferior.
+   *
+   * Ya no depende del diseño interno
+   * que React Navigation aplica a cada tab.
+   */
+  tabBar: {
+    position: "absolute",
+
+    left: 16,
+    right: 88,
+    bottom: 16,
+
+    height: 60,
+
+    borderRadius: 20,
+    backgroundColor: "#FFFFFF",
+
+    flexDirection: "row",
+    alignItems: "center",
+
+    shadowColor: "#000",
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+
+    elevation: 8,
+  },
+
+  /*
+   * Cada icono ocupa exactamente
+   * toda la altura de la barra.
+   */
+  tabItem: {
+    flex: 1,
+
+    height: 60,
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    padding: 0,
+    margin: 0,
+  },
+
+  /*
+   * Botón + independiente de la barra.
+   */
+  addButton: {
+    position: "absolute",
+
+    right: 16,
+    bottom: 18,
+
+    width: 56,
+    height: 56,
+
+    borderRadius: 18,
+
+    backgroundColor: COLORS.primary,
+
+    alignItems: "center",
+    justifyContent: "center",
+
+    shadowColor: "#000",
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+
+    elevation: 8,
+  },
+});
