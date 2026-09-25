@@ -1,20 +1,15 @@
-import {
-  Alert,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { Tabs } from "expo-router";
 
-import {
-  Ionicons,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { COLORS } from "@/styles/dashboard.styles";
+import { useMenu } from "@/context/MenuContext";
 
 export default function TabsLayout() {
+  const { setIsMenuOpen } = useMenu();
+
   return (
     <View style={styles.container}>
       <Tabs
@@ -128,15 +123,10 @@ export default function TabsLayout() {
         />
       </Tabs>
 
-      {/* Botón + separado de la barra */}
+      {/* Botón flotante "+" para abrir el menú */}
       <Pressable
         style={styles.addButton}
-        onPress={() =>
-          Alert.alert(
-            "Menú",
-            "Aquí va a abrirse el menú con Ayuda (pendiente)"
-          )
-        }
+        onPress={() => setIsMenuOpen(true)}
       >
         <Ionicons
           name="add"
