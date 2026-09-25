@@ -1,9 +1,15 @@
-import { View, Pressable, Alert } from "react-native";
+import { Pressable, View } from "react-native";
+
 import { Tabs } from "expo-router";
+
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { styles, COLORS } from "@/styles/dashboard.styles";
+
+import { useMenu } from "@/context/MenuContext";
+import { COLORS, styles } from "@/styles/dashboard.styles";
 
 export default function TabsLayout() {
+  const { setIsMenuOpen } = useMenu();
+
   return (
     <View style={{ flex: 1 }}>
       <Tabs
@@ -40,6 +46,7 @@ export default function TabsLayout() {
             ),
           }}
         />
+
         <Tabs.Screen
           name="mapa"
           options={{
@@ -53,6 +60,7 @@ export default function TabsLayout() {
             ),
           }}
         />
+
         <Tabs.Screen
           name="vehiculos"
           options={{
@@ -62,6 +70,7 @@ export default function TabsLayout() {
             ),
           }}
         />
+
         <Tabs.Screen
           name="historial"
           options={{
@@ -74,22 +83,7 @@ export default function TabsLayout() {
       </Tabs>
 
       {/* Botón flotante "+" encima de la barra de pestañas */}
-      <Pressable
-        style={{
-          position: "absolute",
-          bottom: 24,
-          right: 28,
-          width: 40,
-          height: 40,
-          borderRadius: 12,
-          backgroundColor: COLORS.primary,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        onPress={() =>
-          Alert.alert("Menú", "Aquí va a abrirse el menú con Ayuda (pendiente)")
-        }
-      >
+      <Pressable style={styles.addButton} onPress={() => setIsMenuOpen(true)}>
         <Ionicons name="add" size={20} color="#FFF" />
       </Pressable>
     </View>
