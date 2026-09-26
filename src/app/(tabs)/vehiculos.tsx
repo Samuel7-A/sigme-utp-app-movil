@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { styles, COLORS } from '@/styles/vehiculos.styles';
 
-const VEHICULOS = [
+const VEHICULOS_INICIALES = [
   { id: '1', nombre: 'Toyota Corolla', placa: 'ABC-123', marca: 'Toyota', anio: '2022', principal: true },
   { id: '2', nombre: 'Hyundai Accent', placa: 'XYZ-456', marca: 'Hyundai', anio: '2021', principal: false },
   { id: '3', nombre: 'Kia Sportage', placa: 'DEF-789', marca: 'Kia', anio: '2023', principal: false },
@@ -12,6 +13,16 @@ const VEHICULOS = [
 
 export default function VehiculosScreen() {
   const router = useRouter();
+  const [vehiculos, setVehiculos] = useState(VEHICULOS_INICIALES);
+
+  const handleSetPrincipal = (id: string) => {
+    setVehiculos((prev) =>
+      prev.map((v) => ({
+        ...v,
+        principal: v.id === id,
+      }))
+    );
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -36,7 +47,7 @@ export default function VehiculosScreen() {
           </View>
         </View>
 
-        {VEHICULOS.map((v) => (
+        {vehiculos.map((v) => (
           <View
             key={v.id}
             style={[styles.vehicleCard, v.principal && styles.vehicleCardSelected]}
@@ -73,6 +84,8 @@ export default function VehiculosScreen() {
                   styles.selectButton,
                   v.principal ? styles.selectButtonFilled : styles.selectButtonOutline,
                 ]}
+                onPress={() => handleSetPrincipal(v.id)}
+                disabled={v.principal}
               >
                 <Ionicons
                   name={v.principal ? 'checkmark-circle' : 'person-outline'}
