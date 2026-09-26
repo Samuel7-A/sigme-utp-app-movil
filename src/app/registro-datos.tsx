@@ -187,9 +187,7 @@ export default function RegistroDatosScreen() {
 
     // RF02 será el siguiente paso.
     // Todavía NO enviamos datos ni creamos cuentas.
-    setMessage(
-      "Datos adicionales validados. El siguiente paso será aceptar los términos y condiciones (RF02)."
-    );
+    router.push("/terminos");
   };
 
   return (

@@ -21,6 +21,7 @@ export default function RootLayout() {
             <Stack.Screen name="login" />
             <Stack.Screen name="registro" />
             <Stack.Screen name="registro-datos" />
+            <Stack.Screen name="terminos" />
             <Stack.Screen name="(tabs)" />
           </Stack>
 
