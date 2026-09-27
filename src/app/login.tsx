@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { styles } from "@/styles/login.styles";
 import { router } from "expo-router";
+import { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -10,7 +11,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { styles } from "@/styles/login.styles";
 
 export default function LoginScreen() {
   const [usuario, setUsuario] = useState("");
@@ -29,7 +29,7 @@ export default function LoginScreen() {
   };
 
   const handleRegister = () => {
-    Alert.alert("Registro", "Esta pantalla todavía está pendiente.");
+    router.push("/registro");
   };
 
   return (
