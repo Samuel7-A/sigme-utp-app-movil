@@ -7,6 +7,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { router } from "expo-router";
 import { styles } from "@/styles/login.styles";
 import { useLogin } from "@/hooks/useLogin";
 
@@ -21,9 +22,13 @@ export default function LoginScreen() {
     cargando,
     formularioCompleto,
     handleLogin,
-    handleRegister,
     handleForgotPassword,
   } = useLogin();
+
+  // Registro: ahora usa la pantalla de registro del equipo
+  const handleRegister = () => {
+    router.push("/registro");
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
