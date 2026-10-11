@@ -1,8 +1,4 @@
-import { styles } from "@/styles/login.styles";
-import { router } from "expo-router";
-import { useState } from "react";
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -11,23 +7,25 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { router } from "expo-router";
+import { styles } from "@/styles/login.styles";
+import { useLogin } from "@/hooks/useLogin";
 
 export default function LoginScreen() {
-  const [usuario, setUsuario] = useState("");
-  const [password, setPassword] = useState("");
-  const [mostrarPassword, setMostrarPassword] = useState(false);
+  const {
+    usuario,
+    setUsuario,
+    password,
+    setPassword,
+    mostrarPassword,
+    toggleMostrarPassword,
+    cargando,
+    formularioCompleto,
+    handleLogin,
+    handleForgotPassword,
+  } = useLogin();
 
-  const formularioCompleto =
-    usuario.trim().length > 0 && password.trim().length > 0;
-
- const handleLogin = () => {
- router.push("/(tabs)");
-};
-
-  const handleForgotPassword = () => {
-    Alert.alert("Recuperar contraseña", "Esta pantalla todavía está pendiente.");
-  };
-
+  // Registro: ahora usa la pantalla de registro del equipo
   const handleRegister = () => {
     router.push("/registro");
   };
@@ -87,10 +85,7 @@ export default function LoginScreen() {
                 autoCapitalize="none"
                 autoCorrect={false}
               />
-              <Pressable
-                style={styles.eyeButton}
-                onPress={() => setMostrarPassword((v) => !v)}
-              >
+              <Pressable style={styles.eyeButton} onPress={toggleMostrarPassword}>
                 <Text style={styles.eye}>{mostrarPassword ? "●" : "◉"}</Text>
               </Pressable>
             </View>
@@ -106,9 +101,10 @@ export default function LoginScreen() {
               pressed && formularioCompleto && styles.buttonPressed,
             ]}
             onPress={handleLogin}
+            disabled={cargando}
           >
             <Text style={[styles.buttonText, formularioCompleto && styles.buttonTextEnabled]}>
-              Ingresar
+              {cargando ? "Ingresando..." : "Ingresar"}
             </Text>
           </Pressable>
 
@@ -119,6 +115,7 @@ export default function LoginScreen() {
               pressed && styles.buttonPressed,
             ]}
             onPress={handleRegister}
+            disabled={cargando}
           >
             <Text style={styles.buttonText}>Registrarse</Text>
           </Pressable>
